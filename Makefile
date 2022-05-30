@@ -79,6 +79,17 @@ build: web docs cli
 update: web-deps-update cli-deps-update docs-deps-update
 	docker pull alpine
 
+
+# Ubuntu-specific
+
+build-deps-ubuntu:
+	apt install -y \
+		python3-pip \
+		curl \
+		gcc-aarch64-linux-gnu \
+		gcc-arm-linux-gnueabi \
+		upx
+
 # Documentation
 
 docs: docs-deps docs-build
