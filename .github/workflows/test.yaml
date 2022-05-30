@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Install dependencies
-        run: sudo apt update && sudo apt install -y python3-pip curl
+        run: make build-deps-ubuntu
       - name: Build docs (required for tests)
         run: make docs
       - name: Build web app (required for tests)

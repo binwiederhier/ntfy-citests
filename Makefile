@@ -83,7 +83,8 @@ update: web-deps-update cli-deps-update docs-deps-update
 # Ubuntu-specific
 
 build-deps-ubuntu:
-	apt install -y \
+	sudo apt update
+	sudo apt install -y \
 		python3-pip \
 		curl \
 		gcc-aarch64-linux-gnu \
