@@ -179,7 +179,7 @@ cli-client: cli-deps-static-sites
 		-ldflags \
 		"-X main.version=$(VERSION) -X main.commit=$(shell git rev-parse --short HEAD) -X main.date=$(shell date +%s)"
 
-cli-deps: cli-deps-static-sites cli-deps-all cli-deps-gcc
+cli-deps: cli-deps-static-sites cli-deps-all cli-deps-gcc cli-deps-goreleaser
 
 cli-deps-gcc: cli-deps-gcc-armv6-armv7 cli-deps-gcc-arm64
 
@@ -195,6 +195,9 @@ cli-deps-gcc-armv6-armv7:
 
 cli-deps-gcc-arm64:
 	which aarch64-linux-gnu-gcc || { echo "ERROR: ARM64 cross compiler not installed. On Ubuntu, run: apt install gcc-aarch64-linux-gnu"; exit 1; }
+
+cli-deps-goreleaser:
+	go install github.com/goreleaser/goreleaser@latest
 
 cli-deps-update:
 	go get -u
@@ -241,7 +244,7 @@ lint:
 
 staticcheck: .PHONY
 	rm -rf build/staticcheck
-	which staticcheck || go install honnef.co/go/tools/cmd/staticcheck@latest
+	go install honnef.co/go/tools/cmd/staticcheck@latest
 	mkdir -p build/staticcheck
 	ln -s "go" build/staticcheck/go
 	PATH="$(PWD)/build/staticcheck:$(PATH)" staticcheck ./...
