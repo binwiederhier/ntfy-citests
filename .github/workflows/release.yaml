@@ -4,7 +4,7 @@ on:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Install Go
@@ -18,6 +18,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Install dependencies
-        run: sudo apt update && sudo apt install -y python3-pip curl
+        run: make build-deps-ubuntu
       - name: Build all the things
-        run: make build
+        run: make release
