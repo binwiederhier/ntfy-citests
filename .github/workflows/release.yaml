@@ -1,0 +1,23 @@
+name: release
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.17.x'
+      - name: Install node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: sudo apt update && sudo apt install -y python3-pip curl
+      - name: Build all the things
+        run: make build
