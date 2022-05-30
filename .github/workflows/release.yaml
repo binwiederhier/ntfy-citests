@@ -19,9 +19,9 @@ jobs:
         uses: actions/checkout@v2
       - name: Install dependencies
         run: make build-deps-ubuntu
-      - name: Build docs and web app, run tests
+      - name: Build docs and web app
         run: make release-ci
-      - name: Build and release
+      - name: Build and release CLI/server
         uses: goreleaser/goreleaser-action@v2
         with:
           distribution: goreleaser
