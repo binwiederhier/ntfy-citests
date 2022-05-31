@@ -206,10 +206,13 @@ cli-deps-update:
 
 cli-build-results:
 	cat dist/config.yaml
-	cat artifacts.json | jq .
-	cat dist/metadata.json | jq .
-	cat dist/checksums.txt
-
+	[ -f dist/artifacts.json ] && cat dist/artifacts.json | jq . || true
+	[ -f dist/metadata.json ] && cat dist/metadata.json | jq . || true
+	[ -f dist/checksums.txt ] && cat dist/checksums.txt || true
+	find dist -maxdepth 2 -type f \
+		\( -name '*.deb' -or -name '*.rpm' -or -name '*.zip' -or -name '*.tar.gz' -or -name 'ntfy' \) \
+		-and -not -path 'dist/goreleaserdocker*' \
+		-exec sha256sum {} \;
 
 # Test/check targets
 
