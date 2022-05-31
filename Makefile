@@ -130,25 +130,25 @@ web-deps-update:
 # Main server/client build
 
 cli: cli-deps
-	goreleaser build --snapshot --rm-dist --debug
+	goreleaser build --snapshot --rm-dist
 
 cli-linux-amd64: cli-deps-static-sites
-	goreleaser build --snapshot --rm-dist --debug --id ntfy_linux_amd64
+	goreleaser build --snapshot --rm-dist --id ntfy_linux_amd64
 
 cli-linux-armv6: cli-deps-static-sites cli-deps-gcc-armv6-armv7
-	goreleaser build --snapshot --rm-dist --debug --id ntfy_linux_armv6
+	goreleaser build --snapshot --rm-dist --id ntfy_linux_armv6
 
 cli-linux-armv7: cli-deps-static-sites cli-deps-gcc-armv6-armv7
-	goreleaser build --snapshot --rm-dist --debug --id ntfy_linux_armv7
+	goreleaser build --snapshot --rm-dist --id ntfy_linux_armv7
 
 cli-linux-arm64: cli-deps-static-sites cli-deps-gcc-arm64
-	goreleaser build --snapshot --rm-dist --debug --id ntfy_linux_arm64
+	goreleaser build --snapshot --rm-dist --id ntfy_linux_arm64
 
 cli-windows-amd64: cli-deps-static-sites
-	goreleaser build --snapshot --rm-dist --debug --id ntfy_windows_amd64
+	goreleaser build --snapshot --rm-dist --id ntfy_windows_amd64
 
 cli-darwin-all: cli-deps-static-sites
-	goreleaser build --snapshot --rm-dist --debug --id ntfy_darwin_all
+	goreleaser build --snapshot --rm-dist --id ntfy_darwin_all
 
 cli-linux-server: cli-deps-static-sites
 	# This is a target to build the CLI (including the server) manually.
@@ -260,7 +260,7 @@ release: clean update cli-deps release-checks docs web check
 	cat dist/artifacts.json | jq -r '.[].path' | xargs sha256sum
 
 release-snapshot: clean update cli-deps docs web check
-	goreleaser release --snapshot --skip-publish --rm-dist --debug
+	goreleaser release --snapshot --skip-publish --rm-dist
 
 release-checks:
 	$(eval LATEST_TAG := $(shell git describe --abbrev=0 --tags | cut -c2-))
