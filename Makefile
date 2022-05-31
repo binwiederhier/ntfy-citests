@@ -204,6 +204,13 @@ cli-deps-update:
 	go install golang.org/x/lint/golint@latest
 	go install github.com/goreleaser/goreleaser@latest
 
+cli-build-results:
+	cat dist/config.yaml
+	cat artifacts.json | jq .
+	cat dist/metadata.json | jq .
+	cat dist/checksums.txt
+
+
 # Test/check targets
 
 check: test fmt-check vet lint staticcheck
@@ -256,8 +263,6 @@ staticcheck: .PHONY
 
 release: clean update cli-deps release-checks docs web check
 	goreleaser release --rm-dist
-	cat dist/checksums.txt
-	cat dist/artifacts.json | jq -r '.[].path' | xargs sha256sum
 
 release-snapshot: clean update cli-deps docs web check
 	goreleaser release --snapshot --skip-publish --rm-dist

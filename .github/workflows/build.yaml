@@ -23,3 +23,6 @@ jobs:
       -
         name: Build all the things
         run: make build
+      -
+        name: Print build results and checksums
+        run: make cli-build-results

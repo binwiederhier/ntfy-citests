@@ -4,7 +4,7 @@ on:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
       -
@@ -34,4 +34,6 @@ jobs:
         run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      -
+        name: Print build results and checksums
+        run: make cli-build-results
