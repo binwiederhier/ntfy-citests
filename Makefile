@@ -190,6 +190,7 @@ cli-deps-static-sites:
 
 cli-deps-all:
 	which upx || { echo "ERROR: upx not installed. On Ubuntu, run: apt install upx"; exit 1; }
+	go install github.com/goreleaser/goreleaser@latest
 
 cli-deps-gcc-armv6-armv7:
 	which arm-linux-gnueabi-gcc || { echo "ERROR: ARMv6/ARMv7 cross compiler not installed. On Ubuntu, run: apt install gcc-arm-linux-gnueabi"; exit 1; }
@@ -253,10 +254,12 @@ staticcheck: .PHONY
 
 # Releasing targets
 
-release: clean update cli-deps release-checks docs web check release-checksums
+release: clean update cli-deps release-checks docs web check
 	goreleaser release --rm-dist
+	cat dist/checksums.txt
+	cat dist/artifacts.json | jq -r '.[].path' | xargs sha256sum
 
-release-snapshot: clean update cli-deps docs web check release-checksums
+release-snapshot: clean update cli-deps docs web check
 	goreleaser release --snapshot --skip-publish --rm-dist --debug
 
 release-checks:
@@ -273,9 +276,6 @@ release-checks:
 	  echo "ERROR: Git repository is in an unclean state.";\
 	  exit 1;\
 	fi
-
-release-checksums:
-	cat dist/artifacts.json | jq -r '.[].path' | xargs sha256sum
 
 
 # Installing targets

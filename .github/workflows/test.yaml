@@ -1,28 +1,37 @@
-name: test
+name: build
 on: [push, pull_request]
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Go
+      -
+        name: Install Go
         uses: actions/setup-go@v2
         with:
           go-version: '1.18.x'
-      - name: Install node
+      -
+        name: Install node
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - name: Checkout code
+      -
+        name: Checkout code
         uses: actions/checkout@v2
-      - name: Install dependencies
+      -
+        name: Install dependencies
         run: make build-deps-ubuntu
-      - name: Build docs (required for tests)
+      -
+        name: Build docs (required for tests)
         run: make docs
-      - name: Build web app (required for tests)
+      -
+        name: Build web app (required for tests)
         run: make web
-      - name: Run tests, formatting, vetting and linting
+      -
+        name: Run tests, formatting, vetting and linting
         run: make check
-      - name: Run coverage
+      -
+        name: Run coverage
         run: make coverage
-      - name: Upload coverage to codecov.io
+      -
+        name: Upload coverage to codecov.io
         run: make coverage-upload
