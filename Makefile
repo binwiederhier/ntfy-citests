@@ -79,7 +79,6 @@ build: web docs cli
 update: web-deps-update cli-deps-update docs-deps-update
 	docker pull alpine
 
-
 # Ubuntu-specific
 
 build-deps-ubuntu:
@@ -89,7 +88,8 @@ build-deps-ubuntu:
 		curl \
 		gcc-aarch64-linux-gnu \
 		gcc-arm-linux-gnueabi \
-		upx
+		upx \
+		jq
 
 # Documentation
 
@@ -125,6 +125,7 @@ web-deps:
 
 web-deps-update:
 	cd web && npm update
+
 
 # Main server/client build
 
@@ -199,6 +200,8 @@ cli-deps-gcc-arm64:
 cli-deps-update:
 	go get -u
 	go install honnef.co/go/tools/cmd/staticcheck@latest
+	go install golang.org/x/lint/golint@latest
+	go install github.com/goreleaser/goreleaser@latest
 
 # Test/check targets
 
@@ -241,7 +244,7 @@ lint:
 
 staticcheck: .PHONY
 	rm -rf build/staticcheck
-	go install honnef.co/go/tools/cmd/staticcheck@latest
+	which staticcheck || go install honnef.co/go/tools/cmd/staticcheck@latest
 	mkdir -p build/staticcheck
 	ln -s "go" build/staticcheck/go
 	PATH="$(PWD)/build/staticcheck:$(PATH)" staticcheck ./...
@@ -250,16 +253,13 @@ staticcheck: .PHONY
 
 # Releasing targets
 
-release: clean update cli-deps release-check-tags docs web check
-	goreleaser release --rm-dist --debug
+release: clean update cli-deps release-checks docs web check release-checksums
+	goreleaser release --rm-dist
 
-release-ci: clean update cli-deps release-check-tags docs web check
-	# Do not call 'goreleaser', that will be done a GitHub Actions
-
-release-snapshot: clean update cli-deps docs web check
+release-snapshot: clean update cli-deps docs web check release-checksums
 	goreleaser release --snapshot --skip-publish --rm-dist --debug
 
-release-check-tags:
+release-checks:
 	$(eval LATEST_TAG := $(shell git describe --abbrev=0 --tags | cut -c2-))
 	if ! grep -q $(LATEST_TAG) docs/install.md; then\
 	 	echo "ERROR: Must update docs/install.md with latest tag first.";\
@@ -269,6 +269,13 @@ release-check-tags:
 		echo "ERROR: Must update docs/releases.md with latest tag first.";\
 		exit 1;\
 	fi
+	if [ -n "$(shell git status -s)" ]; then\
+	  echo "ERROR: Git repository is in an unclean state.";\
+	  exit 1;\
+	fi
+
+release-checksums:
+	cat dist/artifacts.json | jq -r '.[].path' | xargs sha256sum
 
 
 # Installing targets

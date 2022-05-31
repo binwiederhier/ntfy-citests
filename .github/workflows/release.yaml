@@ -7,30 +7,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Go
+      -
+        name: Install Go
         uses: actions/setup-go@v2
         with:
           go-version: '1.18.x'
-      - name: Install node
+      -
+        name: Install node
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - name: Checkout code
+      -
+        name: Checkout code
         uses: actions/checkout@v2
-      - name: Docker login
+      -
+        name: Docker login
         uses: docker/login-action@v2
         with:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Install dependencies
+      -
+        name: Install dependencies
         run: make build-deps-ubuntu
-      - name: Build docs and web app
-        run: make release-ci
-      - name: Build and release CLI/server
-        uses: goreleaser/goreleaser-action@v2
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --rm-dist
+      -
+        name: Build and publish
+        run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
