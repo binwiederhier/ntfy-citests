@@ -84,12 +84,12 @@ update: web-deps-update cli-deps-update docs-deps-update
 build-deps-ubuntu:
 	sudo apt update
 	sudo apt install -y \
-		python3-pip \
 		curl \
 		gcc-aarch64-linux-gnu \
 		gcc-arm-linux-gnueabi \
 		upx \
 		jq
+	which pip3 || sudo apt install -y python3-pip
 
 # Documentation
 
