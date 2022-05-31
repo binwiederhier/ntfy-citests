@@ -23,7 +23,9 @@ jobs:
         with:
           path: |
             ~/go/pkg/mod
+            ~/go/bin
             ~/.npm
+            web/node_modules
           key: ${{ runner.os }}-ntfy-${{ hashFiles('**/go.sum', '**/package.lock') }}
           restore-keys: ${{ runner.os }}-ntfy-
       -
